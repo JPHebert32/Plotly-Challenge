@@ -1,28 +1,23 @@
-// create the function to get the necessary data
-function demogrphics(id) {
-    // read the json file to get data
+function demoInfo(id) {
+  // read the json file to get data
     d3.json("samples.json").then((data)=> {
-        console.log(data)
+        // get the metadata info for the demographic panel
+        var metadata = data.metadata;
+        console.log(metadata)
 
-        // get demographic data
-        var demographicData = data.metadata;
-        console.log(`demographicData: ${demographicData}`)
-
-        // filter demographicData by id
-        var subjectID = demographicData.filter(d => d.id.toString() === id)[0];
-        console.log(subjectID)
-
-        // select demogrphic panel in html code and empty panel for new Data
-        var subjectInfo = d3.select("#sample-metadata");
-        subjectInfo.html("");
+        // filter meta data info by id
+        var result = metadata.filter(meta => meta.id.toString() === id)[0];
+        // select demographic panel to put data and clear panel for new data
+        var demographicInfo = d3.select("#sample-metadata");
+        demographicInfo.html("");
 
         // grab the necessary demographic data data for the id and append the info to the panel
         Object.entries(result).forEach((key) => {
-                demographicInfo.append("h5").text(key[0].toUpperCase() + ": " + key[1] + "\n");
+            demographicInfo.append("h5").text(key[0].toUpperCase() + ": " + key[1] + "\n");
         });
     });
 }
-demogrphics();
+
 // Create function for plotting data (Bar, gauge, bubble)
 function buildPlots(id) {
     // getting data from the json file
@@ -76,9 +71,33 @@ function buildPlots(id) {
 
         // create the bar plot
         Plotly.newPlot("bar", data, layout);
-
-
-
     });
   }
-buildPlots();
+//buildPlots();
+
+// create the function for the change event
+function optionChanged(id) {
+    buildPlots(id);
+    demoInfo(id);
+}
+
+//Function for the initial data rendering
+function init() {
+    // select dropdown menu
+    var dropdown = d3.select("#selDataset");
+    // read the data
+    d3.json("samples.json").then((data)=> {
+        console.log(data)
+
+        // get the id data to the dropdwown menu
+        data.names.forEach(function(name) {
+            dropdown.append("option").text(name).property("value");
+        });
+
+        // call the functions to display the data and the plots to the page
+        buildPlots(data.names[0]);
+        demoInfo(data.names[0]);
+    });
+}
+
+init();
