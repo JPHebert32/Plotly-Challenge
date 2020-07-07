@@ -37,7 +37,7 @@ function buildPlots(id) {
         console.log(`Top OTU: ${topOTU}`)
         // OTU OTU IDs
         var OTUids = topOTU.map(i => "OTU: " + i)
-        console.log(`OTU IDs: ${OUTids}`)
+        console.log(`OTU IDs: ${OTUids}`)
         // get the top 10 labels for the plot
         var labels = samples.otu_labels.slice(0, 10);
 
@@ -47,7 +47,7 @@ function buildPlots(id) {
             y: OTUids,
             text: labels,
             marker: {
-              color: 'rgb(142,124,195)'},
+              color: '#337AB7'},
             type:"bar",
             orientation: "h",
         };
