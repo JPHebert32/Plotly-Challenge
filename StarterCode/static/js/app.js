@@ -27,7 +27,7 @@ function buildPlots(id) {
         var washFreq = data.metadata.map(w => w.wfreq)
         console.log(`Wash Frequency: ${washFreq}`)
         //Filter "samples" by // ID
-        var samples = data.samples.filter(s =>s.id.toString() === s.id)[0];
+        var samples = data.samples.filter(s =>s.id.toString() === id)[0];
         console.log(samples)
         //Top 10
         var values = samples.sample_values.slice(0, 10).reverse();
@@ -71,6 +71,62 @@ function buildPlots(id) {
 
         // create the bar plot
         Plotly.newPlot("bar", data, layout);
+
+        // The bubble chart
+        var trace1 = {
+          x: samples.otu_ids,
+          y: samples.sample_values,
+          mode: "markers",
+          marker: {
+            size: samples.sample_values,
+            color: samples.otu_ids,
+            colorscale: "Rainbow"
+          },
+          text: samples.otu_labels
+        };
+
+        // set the layout for the bubble plot
+        var layout_1 = {
+          xaxis:{title: "OTU ID"},
+          height: 600,
+          width: 1000
+        };
+
+        // creating data variable
+        var data1 = [trace1];
+
+        // create the bubble plot
+        Plotly.newPlot("bubble", data1, layout_1);
+
+
+        // The guage chart
+
+        var data_g = [
+          {
+          domain: { x: [0, 1], y: [0, 1] },
+          value: parseFloat(washFreq),
+          title: { text: `Weekly Washing Frequency ` },
+          type: 'indicator',
+
+          mode: 'gauge+number',
+          gauge: { axis: { range: [null, 9] },
+                    bar: {'color': "#337AB7"},
+                   steps: [
+                    { range: [0, 2], color: '#F0F8FF' },
+                    { range: [2, 4], color: '#B0E0E6' },
+                    { range: [4, 6], color: '#ADD8E6' },
+                    { range: [6, 8], color: '#87CEEB' },
+                    { range: [8, 9], color: '#B0C4DE' },
+                  ]}
+
+          }
+        ];
+        var layout_g = {
+            width: 700,
+            height: 600,
+            margin: { t: 20, b: 40, l:100, r:100 }
+          };
+        Plotly.newPlot("gauge", data_g, layout_g);
     });
   }
 //buildPlots();
