@@ -3,7 +3,7 @@ function demoInfo(id) {
     d3.json("samples.json").then((data)=> {
         // get the metadata info for the demographic panel
         var metadata = data.metadata;
-        console.log(metadata)
+        //console.log(metadata)
 
         // filter meta data info by id
         var result = metadata.filter(meta => meta.id.toString() === id)[0];
@@ -22,24 +22,24 @@ function demoInfo(id) {
 function buildPlots(id) {
     // getting data from the json file
     d3.json("samples.json").then((data)=> {
-        console.log(data)
+        //console.log(data)
         // Number of washes
         var washFreq = data.metadata.map(w => w.wfreq)
         console.log(`Wash Frequency: ${washFreq}`)
-        //Filter "samples" by // ID
-        var samples = data.samples.filter(s =>s.id.toString() === id)[0];
-        console.log(samples)
+        //Filter "samples" by ID
+        var samplesID = data.samples.filter(s =>s.id.toString() === id)[0];
+        console.log(samplesID)
         //Top 10
-        var values = samples.sample_values.slice(0, 10).reverse();
+        var values = samplesID.sample_values.slice(0, 10).reverse();
         console.log(`Values: ${values}`)
         //Top 10 otu
-        var topOTU = samples.otu_ids.slice(0, 10).reverse();
+        var topOTU = samplesID.otu_ids.slice(0, 10).reverse();
         console.log(`Top OTU: ${topOTU}`)
         // OTU OTU IDs
         var OTUids = topOTU.map(i => "OTU: " + i)
         console.log(`OTU IDs: ${OTUids}`)
         // get the top 10 labels for the plot
-        var labels = samples.otu_labels.slice(0, 10);
+        var labels = samplesID.otu_labels.slice(0, 10);
 
         // create trace variable for the plot
         var trace = {
@@ -74,19 +74,19 @@ function buildPlots(id) {
 
         // The bubble chart
         var trace1 = {
-          x: samples.otu_ids,
-          y: samples.sample_values,
+          x: samplesID.otu_ids,
+          y: samplesID.sample_values,
           mode: "markers",
           marker: {
-            size: samples.sample_values,
-            color: samples.otu_ids,
+            size: samplesID.sample_values,
+            color: samplesID.otu_ids,
             colorscale: "Rainbow"
           },
-          text: samples.otu_labels
+          text: samplesID.otu_labels
         };
 
         // set the layout for the bubble plot
-        var layout_1 = {
+        var layout1 = {
           xaxis:{title: "OTU ID"},
           height: 600,
           width: 1000
@@ -96,11 +96,10 @@ function buildPlots(id) {
         var data1 = [trace1];
 
         // create the bubble plot
-        Plotly.newPlot("bubble", data1, layout_1);
+        Plotly.newPlot("bubble", data1, layout1);
 
 
         // The guage chart
-
         var data_g = [
           {
           domain: { x: [0, 1], y: [0, 1] },
@@ -109,14 +108,14 @@ function buildPlots(id) {
           type: 'indicator',
 
           mode: 'gauge+number',
-          gauge: { axis: { range: [null, 9] },
+          gauge: { axis: { range: [null, 10] },
                     bar: {'color': "#337AB7"},
                    steps: [
                     { range: [0, 2], color: '#F0F8FF' },
                     { range: [2, 4], color: '#B0E0E6' },
                     { range: [4, 6], color: '#ADD8E6' },
                     { range: [6, 8], color: '#87CEEB' },
-                    { range: [8, 9], color: '#B0C4DE' },
+                    { range: [8, 10], color: '#B0C4DE' },
                   ]}
 
           }
@@ -143,7 +142,7 @@ function init() {
     var dropdown = d3.select("#selDataset");
     // read the data
     d3.json("samples.json").then((data)=> {
-        console.log(data)
+        //console.log(data)
 
         // get the id data to the dropdwown menu
         data.names.forEach(function(name) {
@@ -152,7 +151,9 @@ function init() {
 
         // call the functions to display the data and the plots to the page
         buildPlots(data.names[0]);
+        console.log(buildPlots);
         demoInfo(data.names[0]);
+        //console.log(demoInfo);
     });
 }
 
