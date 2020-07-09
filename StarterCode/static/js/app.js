@@ -7,6 +7,7 @@ function demoInfo(id) {
 
         // filter meta data info by id
         var result = metadata.filter(meta => meta.id.toString() === id)[0];
+        console.log(result);
         // select demographic panel to put data and clear panel for new data
         var demographicInfo = d3.select("#sample-metadata");
         demographicInfo.html("");
@@ -24,8 +25,10 @@ function buildPlots(id) {
     d3.json("samples.json").then((data)=> {
         //console.log(data)
         // Number of washes
-        var washFreq = data.metadata.map(w => w.wfreq)
-        console.log(`Wash Frequency: ${washFreq}`)
+        var result = data.metadata.filter(meta => meta.id.toString() === id)[0];
+        var washFreq = result.wfreq;
+        console.log(`wash: ${washFreq}`);
+
         //Filter "samples" by ID
         var samplesID = data.samples.filter(s =>s.id.toString() === id)[0];
         console.log(samplesID)
@@ -100,10 +103,10 @@ function buildPlots(id) {
 
 
         // The guage chart
-        var data_g = [
+        var dataG = [
           {
           domain: { x: [0, 1], y: [0, 1] },
-          value: parseFloat(washFreq),
+          value: parseInt(washFreq),
           title: { text: `Weekly Washing Frequency ` },
           type: 'indicator',
 
@@ -120,12 +123,12 @@ function buildPlots(id) {
 
           }
         ];
-        var layout_g = {
+        var layoutG = {
             width: 700,
             height: 600,
             margin: { t: 20, b: 40, l:100, r:100 }
           };
-        Plotly.newPlot("gauge", data_g, layout_g);
+        Plotly.newPlot("gauge", dataG, layoutG);
     });
   }
 //buildPlots();
